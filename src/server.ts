@@ -23,10 +23,12 @@ mongoose.connect(process.env.MONGODB_URI as string)
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+
 app.use('/api/auth', authRoutes);
-app.use('/api/authors', authorRoutes);
-app.use('/api/books', bookRoutes);
-app.use('/api/genres', genreRoutes);
+app.use('/api', authorRoutes);
+app.use('/api', bookRoutes);
+app.use('/api', genreRoutes);
 
 
 const PORT = process.env.PORT || 5000;

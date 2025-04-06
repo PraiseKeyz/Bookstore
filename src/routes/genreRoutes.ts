@@ -5,14 +5,14 @@ import genreController from '../controllers/genreController.js';
 const router = Router();
 const {newGenre, allGenres, getGenreById, editGenre, deleteGenre} = genreController;
 
-router.post('/books', newGenre);
+router.post('/genres', newGenre);
 
-router.get('/books', auth, allGenres);
+router.get('/genres', auth, allGenres);
 
-router.get('/books/{bookId}', auth, getGenreById);
+router.get('/genres/:id', auth, getGenreById);
 
-router.put('/books/{bookId}', auth, editGenre);
+router.put('/genres/:id', auth, editGenre);
 
-router.delete('books/{bookId}', auth, deleteGenre);
+router.delete('genres/:id', auth, deleteGenre);
 
 export default router;

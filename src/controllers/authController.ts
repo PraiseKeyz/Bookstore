@@ -6,14 +6,13 @@ import { Types } from 'mongoose';
 
 dotenv.config();
 
-
 const signup = async (req: Request , res: Response) => {
     try {
         const user = new User(req.body);
         await user.save()
 
         const secretKey = process.env.JWT_SECRET_KEY;
-        const userId: Types.ObjectId = user._id;
+        const userId: Types.ObjectId = user._id as Types.ObjectId; // Fixing type assignment
         const token = jwt.sign(
             { _id: userId.toString() },
             secretKey as string,
@@ -35,17 +34,17 @@ const login = async (req: Request, res: Response): Promise<void> => {
 
         const user = await User.findOne({ email })
         if(!user) {
-            res.status(400).json({ meessage: "User not found"})
+            res.status(400).json({ message: "User not found"})  // Typo fixed (meessage -> message)
             return
         }
         const isMatch = await user.comparePassword(password);
         if(!isMatch) {
-            res.status(400).json({ meessage: "Invalid credentials"})   
+            res.status(400).json({ message: "Invalid credentials"})  // Typo fixed (meessage -> message)   
             return
         }
 
         const { password: _, ...isWithoutPassword } = user.toObject();
-        const userId: Types.ObjectId = user._id;
+        const userId: Types.ObjectId = user._id as Types.ObjectId;  // Fixing type assignment
         const token = jwt.sign(
             { _id: userId.toString() },
             process.env.JWT_SECRET_KEY as string,
@@ -59,5 +58,4 @@ const login = async (req: Request, res: Response): Promise<void> => {
     }
 }
 
-
-export default {login, signup};
+export default { login, signup };

@@ -25,14 +25,17 @@ const userSchema = new Schema<IUser>(
 );
 
 // Before saving the user, hash the password
-userSchema.pre<IUser>('save', async function (next: NextFunction) {
-  if (!this.isModified('password')) return next(); // Don't hash if password hasn't been modified
+userSchema.pre('save', async function (next: NextFunction) {
+  const user = this as IUser; // Casting this to IUser to resolve typing issues
+  
+  if (!user.isModified('password')) return next(); // Don't hash if password hasn't been modified
+  
   try {
     const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
+    user.password = await bcrypt.hash(user.password, salt); // Hash the password here
     next();
   } catch (error) {
-    next(error);
+    next(error); // Pass any error to next
   }
 });
 
