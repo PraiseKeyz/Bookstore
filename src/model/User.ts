@@ -1,6 +1,6 @@
 import { Schema, model, Document } from 'mongoose';
 import bcrypt from 'bcryptjs';
-import { NextFunction } from 'express';
+// import { NextFunction } from 'express';
 
 // Define interface for the User document
 interface IUser extends Document {
@@ -25,17 +25,15 @@ const userSchema = new Schema<IUser>(
 );
 
 // Before saving the user, hash the password
-userSchema.pre('save', async function (next: NextFunction) {
-  const user = this as IUser; // Casting this to IUser to resolve typing issues
-  
-  if (!user.isModified('password')) return next(); // Don't hash if password hasn't been modified
+userSchema.pre('save', async function(this: IUser, next) {
+  if (!this.isModified('password')) return next();
   
   try {
     const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(user.password, salt); // Hash the password here
+    this.password = await bcrypt.hash(this.password, salt);
     next();
-  } catch (error) {
-    next(error); // Pass any error to next
+  } catch (error: any) {
+    next(error as Error);
   }
 });
 
